@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice Maker — Create Professional Invoices for Developers</title>
+  <meta name="description" content="Free, fast invoice maker for freelance web developers. Create professional invoices, preview live, and download as PDF — no login, no backend required." />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- html2pdf.js for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-left">
+      <a href="#" class="header-logo" aria-label="Invoice Maker">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span>Invoice Maker</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <button type="button" class="btn btn-secondary" id="new-invoice">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        New Invoice
+      </button>
+      <button type="button" class="btn btn-secondary" id="print-invoice">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print
+      </button>
+      <button type="button" class="btn btn-primary" id="download-pdf">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MAIN CONTENT
+       ═══════════════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- ─── EDITOR PANEL ─────────────────────────────────── -->
+    <div class="editor-panel" id="editor-panel">
+
+      <!-- Your / Business Details -->
+      <section class="section-card" aria-labelledby="section-business">
+        <div class="section-header">
+          <h3 id="section-business">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Your Details
+          </h3>
+          <button type="button" class="btn btn-secondary btn-sm" id="save-business-details" title="Save your details for future invoices">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Details
+          </button>
+        </div>
+        <div class="field-group">
+          <label for="business-name">Business / Full Name</label>
+          <input type="text" id="business-name" placeholder="e.g., Xian Ahmed" />
+        </div>
+        <div class="field-group">
+          <label for="business-address">Address</label>
+          <input type="text" id="business-address" placeholder="Street, City, Country" />
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="business-email">Email</label>
+            <input type="email" id="business-email" placeholder="hello@example.com" />
+          </div>
+          <div class="field-group">
+            <label for="business-phone">Phone</label>
+            <input type="tel" id="business-phone" placeholder="+880..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="business-website">Website</label>
+            <input type="url" id="business-website" placeholder="example.com" />
+          </div>
+          <div class="field-group">
+            <label for="business-tax-number">Tax / VAT Number</label>
+            <input type="text" id="business-tax-number" placeholder="Optional" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Client Details -->
+      <section class="section-card" aria-labelledby="section-client">
+        <div class="section-header">
+          <h3 id="section-client">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Client Details
+          </h3>
+        </div>
+        <!-- Saved Clients Selector -->
+        <div class="saved-clients-bar">
+          <div class="field-group" style="margin-bottom: 0; flex: 1;">
+            <label for="saved-client-select">Saved Clients</label>
+            <select id="saved-client-select">
+              <option value="">— New Client —</option>
+            </select>
+          </div>
+          <div class="saved-clients-actions">
+            <button type="button" class="btn btn-secondary btn-sm" id="save-client-btn" title="Save current client">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Save
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" id="delete-client-btn" title="Delete selected client" style="display: none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="client-name">Client Name</label>
+            <input type="text" id="client-name" placeholder="John Doe" />
+          </div>
+          <div class="field-group">
+            <label for="client-company">Company Name</label>
+            <input type="text" id="client-company" placeholder="Acme Inc." />
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="client-address">Address</label>
+          <input type="text" id="client-address" placeholder="Street, City, Country" />
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="client-email">Email</label>
+            <input type="email" id="client-email" placeholder="client@example.com" />
+          </div>
+          <div class="field-group">
+            <label for="client-phone">Phone</label>
+            <input type="tel" id="client-phone" placeholder="Optional" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="client-tax-number">VAT / Tax Number</label>
+          <input type="text" id="client-tax-number" placeholder="Optional" />
+        </div>
+      </section>
+
+      <!-- Invoice Details -->
+      <section class="section-card" aria-labelledby="section-invoice">
+        <div class="section-header">
+          <h3 id="section-invoice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Invoice Details
+          </h3>
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="invoice-number">Invoice Number</label>
+            <input type="text" id="invoice-number" placeholder="INV-2026-001" />
+          </div>
+          <div class="field-group">
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <option value="EUR">EUR (€)</option>
+              <option value="USD">USD ($)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="BDT">BDT (৳)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field-group">
+            <label for="invoice-date">Invoice Date</label>
+            <input type="date" id="invoice-date" />
+          </div>
+          <div class="field-group">
+            <label for="due-date">Due Date</label>
+            <input type="date" id="due-date" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="payment-terms">Payment Terms</label>
+          <select id="payment-terms">
+            <option value="Due on receipt">Due on receipt</option>
+            <option value="Net 7">Net 7</option>
+            <option value="Net 14">Net 14</option>
+            <option value="Net 30">Net 30</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Work Items -->
+      <section class="section-card" aria-labelledby="section-items">
+        <div class="section-header">
+          <h3 id="section-items">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Work Items
+          </h3>
+        </div>
+
+        <div id="work-items-list">
+          <!-- Work items are added dynamically by app.js -->
+        </div>
+
+        <button type="button" class="btn-add-item" id="add-work-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Add Work Item
+        </button>
+      </section>
+
+      <!-- Discount & Tax -->
+      <section class="section-card" aria-labelledby="section-financials">
+        <div class="section-header">
+          <h3 id="section-financials">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Discount & Tax
+          </h3>
+        </div>
+
+        <!-- Discount Toggle -->
+        <div class="toggle-row">
+          <label>Enable Discount</label>
+          <button type="button" class="toggle-switch" id="discount-toggle" role="switch" aria-checked="false" aria-label="Enable discount"></button>
+        </div>
+        <div id="discount-content" style="display: none;">
+          <div class="form-row">
+            <div class="field-group">
+              <label for="discount-type">Discount Type</label>
+              <select id="discount-type">
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed Amount</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="discount-value">Discount Value</label>
+              <input type="number" id="discount-value" value="0" min="0" step="0.01" placeholder="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Tax Toggle -->
+        <div class="toggle-row">
+          <label>Enable Tax / VAT</label>
+          <button type="button" class="toggle-switch" id="tax-toggle" role="switch" aria-checked="false" aria-label="Enable tax"></button>
+        </div>
+        <div id="tax-content" style="display: none;">
+          <div class="field-group">
+            <label for="tax-rate">Tax Rate (%)</label>
+            <input type="number" id="tax-rate" value="0" min="0" max="100" step="0.01" placeholder="0" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Payment Information -->
+      <section class="section-card" aria-labelledby="section-payment">
+        <div class="section-header">
+          <h3 id="section-payment">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Payment Information
+          </h3>
+        </div>
+        <div class="field-group">
+          <label for="payment-method">Payment Method</label>
+          <select id="payment-method">
+            <option value="">— Select —</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Wise">Wise</option>
+            <option value="Payoneer">Payoneer</option>
+            <option value="Stripe">Stripe</option>
+            <option value="Cash">Cash</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="payment-details">Payment Details</label>
+          <textarea id="payment-details" placeholder="e.g., wise@example.com&#10;Account: ..." rows="3"></textarea>
+        </div>
+      </section>
+
+      <!-- Notes & Terms -->
+      <section class="section-card" aria-labelledby="section-notes">
+        <div class="section-header">
+          <h3 id="section-notes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Notes & Terms
+          </h3>
+        </div>
+        <div class="field-group">
+          <label for="invoice-notes">Additional Notes</label>
+          <textarea id="invoice-notes" placeholder="e.g., Thank you for your business!" rows="3"></textarea>
+        </div>
+        <div class="field-group">
+          <label for="invoice-terms">Terms & Conditions</label>
+          <textarea id="invoice-terms" placeholder="e.g., Payment is due within 14 days of the invoice date." rows="3"></textarea>
+        </div>
+      </section>
+
+    </div>
+    <!-- /Editor Panel -->
+
+    <!-- ─── PREVIEW PANEL ────────────────────────────────── -->
+    <div class="preview-panel">
+      <div class="invoice-preview-wrapper">
+        <div id="invoice-preview-content">
+          <!-- Rendered by preview.js -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+<!-- /App Container -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS — loaded in dependency order
+     ═══════════════════════════════════════════════════════════ -->
+<script src="js/calculations.js"></script>
+<script src="js/validation.js"></script>
+<script src="js/preview.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
