@@ -138,4 +138,4 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
-Crafted with care by [Xian Saiful](https://github.com/xiansaiful). Live at [quickinvoice-maker.vercel.app](https://quickinvoice-maker.vercel.app).
+Crafted with care by [Xian Saiful](https://github.com/githubxiansaiful). Live at [quickinvoice-maker.vercel.app](https://quickinvoice-maker.vercel.app).
