@@ -1,7 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ─── 1. CSS Custom Properties ──────────────────────────────── */
 :root {
+  /* Safe area insets for mobile notched devices */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
   /* Colors */
   --color-bg: #f5f6fa;
   --color-surface: #ffffff;
@@ -20,7 +26,7 @@
   --color-text-muted: #9ca3af;
 
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -36,16 +42,19 @@
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 12px;
+  --radius-full: 9999px;
 
   /* Shadows */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-paper: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
 
   /* Transitions */
   --transition-fast: 120ms ease;
   --transition-normal: 200ms ease;
+  --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ─── 2. Reset / Base ───────────────────────────────────────── */
@@ -58,6 +67,7 @@
 html {
   font-size: 14px;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -69,6 +79,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
 }
 
 /* ─── 3. Typography ─────────────────────────────────────────── */
@@ -83,6 +94,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -91,12 +103,13 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-8);
+  padding: 0 max(var(--space-8), var(--safe-right)) 0 max(var(--space-8), var(--safe-left));
   height: 56px;
   min-height: 56px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  z-index: 10;
+  z-index: 20;
+  flex-shrink: 0;
 }
 
 .header-left {
@@ -111,10 +124,12 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--space-2);
   text-decoration: none;
   color: var(--color-text-heading);
+  white-space: nowrap;
 }
 
 .header-logo svg {
   color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .header-logo span {
@@ -126,24 +141,41 @@ h1, h2, h3, h4, h5, h6 {
 .header-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
-/* Main content — side by side */
+/* Responsive header button text */
+.btn-text-short {
+  display: none;
+}
+.btn-text-full {
+  display: inline;
+}
+
+/* ─── 4b. Mobile Tab Navigation (Segmented Switcher) ────────── */
+.mobile-tab-nav {
+  display: none; /* Hidden on desktop */
+}
+
+/* Main content — side by side on desktop */
 .main-content {
   display: flex;
   flex: 1;
   overflow: hidden;
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
 }
 
 /* Editor Panel */
 .editor-panel {
   width: 44%;
   min-width: 380px;
+  max-width: 620px;
   background: var(--color-bg);
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
   padding: var(--space-6) var(--space-8);
+  box-sizing: border-box;
 }
 
 /* Preview Panel */
@@ -153,8 +185,17 @@ h1, h2, h3, h4, h5, h6 {
   overflow-y: auto;
   padding: var(--space-8);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.mobile-preview-action {
+  display: none; /* Hidden on desktop */
+}
+
+.mobile-preview-toolbar {
+  display: none; /* Hidden on desktop */
 }
 
 /* ─── 5. Form Elements ──────────────────────────────────────── */
@@ -179,7 +220,7 @@ input[type="date"],
 select,
 textarea {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.75rem;
   font-family: var(--font-family);
   font-size: 0.875rem;
   color: var(--color-text-heading);
@@ -188,6 +229,7 @@ textarea {
   border-radius: var(--radius-md);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   appearance: auto;
+  box-sizing: border-box;
 }
 
 input:focus,
@@ -209,7 +251,7 @@ textarea {
   line-height: 1.5;
 }
 
-/* Number inputs — hide spinners */
+/* Number inputs — hide default browser spin buttons */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -225,6 +267,7 @@ input[type="number"] { -moz-appearance: textfield; }
 
 .form-row .field-group {
   flex: 1;
+  min-width: 0; /* Prevents overflow in flex children */
 }
 
 /* ─── 6. Section Cards ──────────────────────────────────────── */
@@ -274,13 +317,14 @@ input[type="number"] { -moz-appearance: textfield; }
   margin-bottom: var(--space-5);
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--color-border-light);
+  flex-wrap: wrap;
 }
 
 .saved-clients-actions {
   display: flex;
   gap: var(--space-2);
   align-items: center;
-  padding-bottom: 1px; /* align with select bottom */
+  padding-bottom: 1px;
 }
 
 /* ─── 7. Work Items ─────────────────────────────────────────── */
@@ -342,16 +386,30 @@ input[type="number"] { -moz-appearance: textfield; }
   display: grid;
   grid-template-columns: 1.5fr 0.7fr 1fr 0.7fr 0.7fr;
   gap: var(--space-3);
+  align-items: flex-end;
+}
+
+.work-item-grid .field-group {
+  min-width: 0;
+  margin-bottom: 0;
 }
 
 .item-amount-display {
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.75rem;
   font-weight: 600;
   color: var(--color-text-heading);
   background: var(--color-border-light);
   border-radius: var(--radius-md);
   text-align: center;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  box-sizing: border-box;
 }
 
 /* ─── 8. Buttons ────────────────────────────────────────────── */
@@ -360,7 +418,7 @@ input[type="number"] { -moz-appearance: textfield; }
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.875rem;
   font-family: var(--font-family);
   font-size: 0.8125rem;
   font-weight: 500;
@@ -370,6 +428,8 @@ input[type="number"] { -moz-appearance: textfield; }
   transition: all var(--transition-fast);
   text-decoration: none;
   white-space: nowrap;
+  line-height: 1.25;
+  user-select: none;
 }
 
 .btn:focus-visible {
@@ -380,6 +440,10 @@ input[type="number"] { -moz-appearance: textfield; }
 .btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.btn-block {
+  width: 100%;
 }
 
 .btn-primary {
@@ -449,6 +513,7 @@ input[type="number"] { -moz-appearance: textfield; }
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  min-height: 42px;
 }
 
 .btn-add-item:hover {
@@ -473,12 +538,14 @@ input[type="number"] { -moz-appearance: textfield; }
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--space-4);
+  min-height: 32px;
 }
 
 .toggle-row label {
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--color-text-heading);
+  user-select: none;
 }
 
 .toggle-switch {
@@ -523,6 +590,7 @@ input[type="number"] { -moz-appearance: textfield; }
 .invoice-preview-wrapper {
   width: 100%;
   max-width: 780px;
+  box-sizing: border-box;
 }
 
 #invoice-preview-content {
@@ -530,15 +598,14 @@ input[type="number"] { -moz-appearance: textfield; }
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 24px -4px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   padding: 40px 36px;
-  min-height: 800px;
+  min-height: 750px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   box-sizing: border-box;
   overflow: hidden;
   transition: all var(--transition-normal);
+  width: 100%;
 }
 
-/* Invoice document — all styling is inline in preview.js for PDF reliability.
-   Only container-level overrides and print adjustments are here. */
 .invoice-document {
   color: #374151;
   line-height: 1.5;
@@ -564,8 +631,8 @@ input[type="number"] { -moz-appearance: textfield; }
 /* ─── 12. Toast Notifications ───────────────────────────────── */
 #toast-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: max(24px, calc(16px + var(--safe-bottom)));
+  right: max(24px, calc(16px + var(--safe-right)));
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -582,11 +649,12 @@ input[type="number"] { -moz-appearance: textfield; }
   font-size: 0.8125rem;
   font-weight: 500;
   color: #fff;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   opacity: 0;
   transform: translateY(12px) scale(0.95);
   transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: auto;
+  max-width: 90vw;
 }
 
 .toast-visible {
@@ -621,6 +689,8 @@ input[type="number"] { -moz-appearance: textfield; }
   justify-content: center;
   opacity: 0;
   transition: opacity var(--transition-normal);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .dialog-overlay.visible {
@@ -630,12 +700,13 @@ input[type="number"] { -moz-appearance: textfield; }
 .dialog-content {
   background: var(--color-surface);
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  max-width: 400px;
-  width: 90%;
-  box-shadow: var(--shadow-md);
+  padding: var(--space-6) var(--space-8);
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
   transform: scale(0.95);
   transition: transform var(--transition-normal);
+  box-sizing: border-box;
 }
 
 .dialog-overlay.visible .dialog-content {
@@ -651,6 +722,7 @@ input[type="number"] { -moz-appearance: textfield; }
   color: var(--color-text-muted);
   font-size: 0.875rem;
   margin-bottom: var(--space-6);
+  line-height: 1.5;
 }
 
 .dialog-actions {
@@ -659,96 +731,416 @@ input[type="number"] { -moz-appearance: textfield; }
   gap: var(--space-3);
 }
 
-/* ─── 14. Responsive ────────────────────────────────────────── */
-@media (max-width: 1200px) {
+/* ─── 14. Responsive Layout & Breakpoints ───────────────────── */
+
+/* ─── Breakpoint: Laptops & Medium Desktops (1025px - 1280px) */
+@media (max-width: 1280px) {
   .editor-panel {
     width: 48%;
-    min-width: 0;
+    min-width: 360px;
     padding: var(--space-5) var(--space-6);
+  }
+
+  .preview-panel {
+    padding: var(--space-6);
   }
 
   .work-item-grid {
     grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .field-work-type {
+    grid-column: 1 / -1;
   }
 }
 
+/* ─── Breakpoint: Tablets & Small Screens (<= 900px) */
 @media (max-width: 900px) {
   body {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     height: auto;
+    min-height: 100%;
   }
 
   .app-container {
     height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: visible;
   }
 
+  .header {
+    padding: 0 var(--space-4);
+  }
+
+  /* Segmented Mobile Tab Switcher */
+  .mobile-tab-nav {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 6px var(--space-4);
+    gap: var(--space-2);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+  }
+
+  .mobile-tab-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 8px 12px;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-body);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-tab-btn svg {
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+  }
+
+  .mobile-tab-btn.active {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-weight: 600;
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+
+  .mobile-tab-btn.active svg {
+    color: var(--color-primary);
+  }
+
+  .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    line-height: 1;
+  }
+
+  /* Main content in mobile view */
   .main-content {
     flex-direction: column;
     overflow: visible;
+    height: auto;
+    flex: none;
   }
 
   .editor-panel {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border-right: none;
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4);
     overflow: visible;
-    padding: var(--space-5);
+    height: auto;
   }
 
   .preview-panel {
     width: 100%;
+    max-width: 100%;
+    padding: var(--space-4);
     overflow: visible;
-    padding: var(--space-5);
+    height: auto;
+    background: #e5e7eb;
   }
 
-  .header {
-    padding: 0 var(--space-5);
+  /* Panel visibility toggles */
+  .editor-panel.mobile-hidden {
+    display: none !important;
   }
 
-  .header-logo span {
-    font-size: 1rem;
+  .preview-panel.mobile-hidden {
+    display: none !important;
+  }
+
+  /* Mobile preview quick action in editor */
+  .mobile-preview-action {
+    display: block;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .mobile-preview-action .btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Mobile return toolbar in preview */
+  .mobile-preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 780px;
+    margin-bottom: var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .preview-status-pill {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-body);
+    background: rgba(0, 0, 0, 0.06);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .work-item-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .field-work-type {
+    grid-column: 1 / -1;
   }
 }
 
+/* ─── Breakpoint: Mobile Phones (<= 640px) */
 @media (max-width: 640px) {
+  /* Prevent iOS auto zoom by setting 16px font size on inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .header {
+    padding: 0 var(--space-3);
+    height: 52px;
+    min-height: 52px;
+  }
+
+  .header-logo span {
+    font-size: 0.9375rem;
+  }
+
+  .header-logo svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-right {
+    gap: 6px;
+  }
+
+  /* Compact button labels */
+  .btn-text-full {
+    display: none;
+  }
+  .btn-text-short {
+    display: inline;
+  }
+
+  .btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.625rem;
+    gap: 4px;
+  }
+
+  .btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .form-row {
     flex-direction: column;
     gap: 0;
   }
 
-  .work-item-grid {
-    grid-template-columns: 1fr 1fr;
+  .form-row .field-group {
+    margin-bottom: var(--space-4);
   }
 
-  .header-right {
+  .section-card {
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .work-item-row {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .work-item-grid {
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-2);
   }
 
+  .field-work-type {
+    grid-column: 1 / -1;
+  }
+
+  .item-amount-display {
+    min-height: 42px;
+  }
+
+  /* Responsive styling for live preview on screen (keeps PDF clone unaffected) */
+  #invoice-preview-content {
+    padding: 24px 16px;
+    min-height: auto;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-header-container {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-sender-info {
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-meta-info {
+    text-align: left !important;
+    width: 100% !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-title {
+    font-size: 22px !important;
+    margin-bottom: 6px !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-meta-table {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-meta-label {
+    text-align: left !important;
+    padding-right: 10px !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-meta-val {
+    text-align: right !important;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-left: -4px;
+    margin-right: -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-items-table {
+    min-width: 340px;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-totals-container {
+    width: 100%;
+  }
+
+  #invoice-preview-content:not(.is-pdf-clone) .inv-totals-table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Toasts on mobile */
+  #toast-container {
+    bottom: max(16px, calc(12px + var(--safe-bottom)));
+    left: max(16px, calc(12px + var(--safe-left)));
+    right: max(16px, calc(12px + var(--safe-right)));
+    align-items: stretch;
+  }
+
+  .toast {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.8125rem;
+    padding: 10px 14px;
+  }
+
+  /* Dialog on mobile */
+  .dialog-content {
+    padding: var(--space-5);
+    margin: 12px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+  }
+
+  .dialog-actions button {
+    width: 100%;
+    padding: 0.625rem;
+  }
+}
+
+/* ─── Breakpoint: Ultra Narrow Mobile Devices (<= 380px) */
+@media (max-width: 380px) {
+  .header {
+    padding: 0 8px;
+  }
+
+  .header-logo span {
+    font-size: 0.875rem;
+  }
+
+  .header-right {
+    gap: 4px;
+  }
+
   .btn {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+
+  .mobile-tab-nav {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  .mobile-tab-btn {
     font-size: 0.75rem;
-    padding: 0.4rem 0.75rem;
+    padding: 6px 8px;
+  }
+
+  .editor-panel,
+  .preview-panel {
+    padding: 10px;
+  }
+
+  .section-card {
+    padding: 12px 10px;
   }
 
   #invoice-preview-content {
-    padding: 24px 20px;
-  }
-
-  .inv-top {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .inv-header {
-    text-align: left;
-  }
-
-  .inv-meta-row {
-    justify-content: flex-start;
-  }
-
-  .inv-title {
-    font-size: 24px;
+    padding: 18px 12px;
   }
 }
 
@@ -760,13 +1152,16 @@ input[type="number"] { -moz-appearance: textfield; }
   }
 
   body {
-    background: #fff;
-    overflow: visible;
-    height: auto;
+    background: #fff !important;
+    overflow: visible !important;
+    height: auto !important;
   }
 
   .header,
+  .mobile-tab-nav,
   .editor-panel,
+  .mobile-preview-action,
+  .mobile-preview-toolbar,
   #toast-container,
   .dialog-overlay {
     display: none !important;
@@ -774,27 +1169,28 @@ input[type="number"] { -moz-appearance: textfield; }
 
   .app-container,
   .main-content {
-    display: block;
-    height: auto;
-    overflow: visible;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   .preview-panel {
-    width: 100%;
-    padding: 0;
-    background: #fff;
-    overflow: visible;
-    display: block;
+    width: 100% !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+    display: block !important;
   }
 
   .invoice-preview-wrapper {
-    max-width: none;
+    max-width: none !important;
   }
 
   #invoice-preview-content {
-    box-shadow: none;
-    padding: 0;
-    min-height: 0;
+    box-shadow: none !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
   }
 }
 

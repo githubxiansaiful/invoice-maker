@@ -30,6 +30,7 @@ const PDFExport = {
 
     // 1. Create an off-screen clone of the preview content to isolate capture from scroll/DOM state
     const clone = element.cloneNode(true);
+    clone.classList.add('is-pdf-clone');
     clone.style.width = '740px';
     clone.style.padding = '32px 32px';
     clone.style.margin = '0';

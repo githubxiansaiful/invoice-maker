@@ -34,7 +34,7 @@ const Preview = {
     }
 
     container.innerHTML = `
-      <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: ${this.colors.body}; line-height: 1.5; font-size: 13px; background: ${this.colors.white}; width: 100%; box-sizing: border-box;">
+      <div class="inv-document-body" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: ${this.colors.body}; line-height: 1.5; font-size: 13px; background: ${this.colors.white}; width: 100%; box-sizing: border-box;">
         ${this.renderHeader(data, currency)}
         ${this.renderClientSection(data)}
         ${this.renderItemsTable(data, currency)}
@@ -49,7 +49,7 @@ const Preview = {
   renderEmptyState() {
     const c = this.colors;
     return `
-      <div style="font-family: 'Inter', sans-serif; text-align: center; padding: 80px 20px; color: ${c.light}; background: ${c.white};">
+      <div class="inv-empty-state" style="font-family: 'Inter', sans-serif; text-align: center; padding: 80px 20px; color: ${c.light}; background: ${c.white};">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${c.light}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
@@ -71,64 +71,64 @@ const Preview = {
     // Sender details
     let bizHtml = '';
     if (b.name) {
-      bizHtml += `<div style="font-size: 22px; font-weight: 800; color: ${c.dark}; letter-spacing: -0.02em; margin-bottom: 4px;">${this.esc(b.name)}</div>`;
+      bizHtml += `<div class="inv-sender-name" style="font-size: 22px; font-weight: 800; color: ${c.dark}; letter-spacing: -0.02em; margin-bottom: 4px;">${this.esc(b.name)}</div>`;
     }
     if (b.address) {
-      bizHtml += `<div style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(b.address)}</div>`;
+      bizHtml += `<div class="inv-sender-address" style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(b.address)}</div>`;
     }
     
     const contactParts = [];
     if (b.email) contactParts.push(this.esc(b.email));
     if (b.phone) contactParts.push(this.esc(b.phone));
     if (contactParts.length) {
-      bizHtml += `<div style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${contactParts.join(' &nbsp;•&nbsp; ')}</div>`;
+      bizHtml += `<div class="inv-sender-contact" style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${contactParts.join(' &nbsp;•&nbsp; ')}</div>`;
     }
     if (b.website) {
-      bizHtml += `<div style="font-size: 12px; color: ${c.body}; font-weight: 500;">${this.esc(b.website)}</div>`;
+      bizHtml += `<div class="inv-sender-website" style="font-size: 12px; color: ${c.body}; font-weight: 500;">${this.esc(b.website)}</div>`;
     }
     if (b.taxNumber) {
-      bizHtml += `<div style="font-size: 11px; color: ${c.light}; margin-top: 4px;">VAT / Tax ID: ${this.esc(b.taxNumber)}</div>`;
+      bizHtml += `<div class="inv-sender-tax" style="font-size: 11px; color: ${c.light}; margin-top: 4px;">VAT / Tax ID: ${this.esc(b.taxNumber)}</div>`;
     }
 
     // Invoice meta rows
     let metaRows = '';
     if (inv.number) {
       metaRows += `
-        <tr>
-          <td style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Invoice No:</td>
-          <td style="font-size: 12px; font-weight: 700; color: ${c.dark}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.esc(inv.number)}</td>
+        <tr class="inv-meta-row">
+          <td class="inv-meta-label" style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Invoice No:</td>
+          <td class="inv-meta-val" style="font-size: 12px; font-weight: 700; color: ${c.dark}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.esc(inv.number)}</td>
         </tr>`;
     }
     if (inv.date) {
       metaRows += `
-        <tr>
-          <td style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Issue Date:</td>
-          <td style="font-size: 12px; font-weight: 600; color: ${c.body}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.formatDate(inv.date)}</td>
+        <tr class="inv-meta-row">
+          <td class="inv-meta-label" style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Issue Date:</td>
+          <td class="inv-meta-val" style="font-size: 12px; font-weight: 600; color: ${c.body}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.formatDate(inv.date)}</td>
         </tr>`;
     }
     if (inv.dueDate) {
       metaRows += `
-        <tr>
-          <td style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Due Date:</td>
-          <td style="font-size: 12px; font-weight: 600; color: ${c.dark}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.formatDate(inv.dueDate)}</td>
+        <tr class="inv-meta-row">
+          <td class="inv-meta-label" style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Due Date:</td>
+          <td class="inv-meta-val" style="font-size: 12px; font-weight: 600; color: ${c.dark}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.formatDate(inv.dueDate)}</td>
         </tr>`;
     }
     if (inv.paymentTerms && inv.paymentTerms !== 'Due on receipt') {
       metaRows += `
-        <tr>
-          <td style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Terms:</td>
-          <td style="font-size: 12px; font-weight: 600; color: ${c.body}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.esc(inv.paymentTerms)}</td>
+        <tr class="inv-meta-row">
+          <td class="inv-meta-label" style="font-size: 12px; color: ${c.muted}; padding: 2px 14px 2px 0; text-align: right; white-space: nowrap;">Terms:</td>
+          <td class="inv-meta-val" style="font-size: 12px; font-weight: 600; color: ${c.body}; padding: 2px 0; text-align: right; white-space: nowrap;">${this.esc(inv.paymentTerms)}</td>
         </tr>`;
     }
 
     return `
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid ${c.borderLight}; margin-bottom: 24px;">
-        <div style="flex: 1; padding-right: 16px;">
+      <div class="inv-header-container" style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid ${c.borderLight}; margin-bottom: 24px;">
+        <div class="inv-sender-info" style="flex: 1; padding-right: 16px;">
           ${bizHtml}
         </div>
-        <div style="text-align: right;">
-          <div style="font-size: 28px; font-weight: 900; color: ${c.dark}; letter-spacing: 0.04em; margin-bottom: 8px; text-transform: uppercase;">INVOICE</div>
-          <table style="border-collapse: collapse; margin-left: auto;">
+        <div class="inv-meta-info" style="text-align: right;">
+          <div class="inv-title" style="font-size: 28px; font-weight: 900; color: ${c.dark}; letter-spacing: 0.04em; margin-bottom: 8px; text-transform: uppercase;">INVOICE</div>
+          <table class="inv-meta-table" style="border-collapse: collapse; margin-left: auto;">
             ${metaRows}
           </table>
         </div>
@@ -145,27 +145,27 @@ const Preview = {
 
     let clientHtml = '';
     if (cl.name) {
-      clientHtml += `<div style="font-size: 14px; font-weight: 700; color: ${c.dark}; margin-bottom: 2px;">${this.esc(cl.name)}</div>`;
+      clientHtml += `<div class="inv-client-name" style="font-size: 14px; font-weight: 700; color: ${c.dark}; margin-bottom: 2px;">${this.esc(cl.name)}</div>`;
     }
     if (cl.company) {
-      clientHtml += `<div style="font-size: 13px; font-weight: 500; color: ${c.body}; margin-bottom: 2px;">${this.esc(cl.company)}</div>`;
+      clientHtml += `<div class="inv-client-company" style="font-size: 13px; font-weight: 500; color: ${c.body}; margin-bottom: 2px;">${this.esc(cl.company)}</div>`;
     }
     if (cl.address) {
-      clientHtml += `<div style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.address)}</div>`;
+      clientHtml += `<div class="inv-client-address" style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.address)}</div>`;
     }
     if (cl.email) {
-      clientHtml += `<div style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.email)}</div>`;
+      clientHtml += `<div class="inv-client-email" style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.email)}</div>`;
     }
     if (cl.phone) {
-      clientHtml += `<div style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.phone)}</div>`;
+      clientHtml += `<div class="inv-client-phone" style="font-size: 12px; color: ${c.muted}; margin-bottom: 2px;">${this.esc(cl.phone)}</div>`;
     }
     if (cl.taxNumber) {
-      clientHtml += `<div style="font-size: 11px; color: ${c.light}; margin-top: 4px;">VAT: ${this.esc(cl.taxNumber)}</div>`;
+      clientHtml += `<div class="inv-client-tax" style="font-size: 11px; color: ${c.light}; margin-top: 4px;">VAT: ${this.esc(cl.taxNumber)}</div>`;
     }
 
     return `
-      <div style="margin-bottom: 28px;">
-        <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 6px;">
+      <div class="inv-client-section" style="margin-bottom: 28px;">
+        <div class="inv-section-title" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 6px;">
           BILLED TO
         </div>
         ${clientHtml}
@@ -183,39 +183,41 @@ const Preview = {
     items.forEach((item) => {
       const desc = this.esc(item.description || '');
       const typeLabel = item.workType && item.workType !== 'Other'
-        ? `<span style="display: inline-block; font-size: 11px; color: ${c.muted}; margin-top: 2px;">(${this.esc(item.workType)})</span>`
+        ? `<span class="inv-item-type" style="display: inline-block; font-size: 11px; color: ${c.muted}; margin-top: 2px;">(${this.esc(item.workType)})</span>`
         : '';
       const qty = item.quantity || 0;
       const rate = item.rate || 0;
       const amount = item.amount || (qty * rate);
 
       rowsHtml += `
-        <tr>
-          <td style="padding: 10px 10px 10px 0; border-bottom: 1px solid ${c.borderLight}; vertical-align: top;">
+        <tr class="inv-item-row">
+          <td class="inv-col-desc" style="padding: 10px 10px 10px 0; border-bottom: 1px solid ${c.borderLight}; vertical-align: top;">
             <span style="font-size: 13px; font-weight: 600; color: ${c.dark};">${desc}</span>
             ${typeLabel ? `<br>${typeLabel}` : ''}
           </td>
-          <td style="padding: 10px 8px; font-size: 13px; font-weight: 500; color: ${c.body}; text-align: center; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${qty}</td>
-          <td style="padding: 10px 8px; font-size: 13px; font-weight: 500; color: ${c.body}; text-align: right; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${Calculations.formatCurrency(rate, currency)}</td>
-          <td style="padding: 10px 0 10px 8px; font-size: 13px; font-weight: 700; color: ${c.dark}; text-align: right; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${Calculations.formatCurrency(amount, currency)}</td>
+          <td class="inv-col-qty" style="padding: 10px 8px; font-size: 13px; font-weight: 500; color: ${c.body}; text-align: center; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${qty}</td>
+          <td class="inv-col-rate" style="padding: 10px 8px; font-size: 13px; font-weight: 500; color: ${c.body}; text-align: right; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${Calculations.formatCurrency(rate, currency)}</td>
+          <td class="inv-col-amount" style="padding: 10px 0 10px 8px; font-size: 13px; font-weight: 700; color: ${c.dark}; text-align: right; border-bottom: 1px solid ${c.borderLight}; vertical-align: top; white-space: nowrap;">${Calculations.formatCurrency(amount, currency)}</td>
         </tr>
       `;
     });
 
     return `
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-        <thead>
-          <tr style="border-top: 2px solid ${c.borderDark}; border-bottom: 1px solid ${c.borderDark};">
-            <th style="padding: 8px 10px 8px 0; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: left; text-transform: uppercase; letter-spacing: 0.06em;">Description</th>
-            <th style="padding: 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: center; text-transform: uppercase; letter-spacing: 0.06em; width: 50px;">Qty</th>
-            <th style="padding: 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: right; text-transform: uppercase; letter-spacing: 0.06em; width: 100px;">Rate</th>
-            <th style="padding: 8px 0 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: right; text-transform: uppercase; letter-spacing: 0.06em; width: 110px;">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-        </tbody>
-      </table>
+      <div class="inv-table-wrapper" style="width: 100%; margin-bottom: 24px;">
+        <table class="inv-items-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-top: 2px solid ${c.borderDark}; border-bottom: 1px solid ${c.borderDark};">
+              <th style="padding: 8px 10px 8px 0; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: left; text-transform: uppercase; letter-spacing: 0.06em;">Description</th>
+              <th style="padding: 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: center; text-transform: uppercase; letter-spacing: 0.06em; width: 50px;">Qty</th>
+              <th style="padding: 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: right; text-transform: uppercase; letter-spacing: 0.06em; width: 100px;">Rate</th>
+              <th style="padding: 8px 0 8px 8px; font-size: 10px; font-weight: 700; color: ${c.dark}; text-align: right; text-transform: uppercase; letter-spacing: 0.06em; width: 110px;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
     `;
   },
 
@@ -267,8 +269,8 @@ const Preview = {
     `;
 
     return `
-      <div style="display: flex; justify-content: flex-end; margin-bottom: 28px; page-break-inside: avoid;">
-        <table style="width: 260px; border-collapse: collapse;">
+      <div class="inv-totals-container" style="display: flex; justify-content: flex-end; margin-bottom: 28px; page-break-inside: avoid;">
+        <table class="inv-totals-table" style="width: 260px; max-width: 100%; border-collapse: collapse;">
           ${subRows}
         </table>
       </div>
@@ -292,8 +294,8 @@ const Preview = {
       }
       
       blocks.push(`
-        <div style="margin-bottom: 18px; page-break-inside: avoid;">
-          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">PAYMENT INFORMATION</div>
+        <div class="inv-footer-block inv-payment-block" style="margin-bottom: 18px; page-break-inside: avoid;">
+          <div class="inv-section-title" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">PAYMENT INFORMATION</div>
           ${payContent}
         </div>
       `);
@@ -302,8 +304,8 @@ const Preview = {
     // Notes
     if (data.notes) {
       blocks.push(`
-        <div style="margin-bottom: 18px; page-break-inside: avoid;">
-          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">NOTES</div>
+        <div class="inv-footer-block inv-notes-block" style="margin-bottom: 18px; page-break-inside: avoid;">
+          <div class="inv-section-title" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">NOTES</div>
           <div style="font-size: 12px; color: ${c.body}; line-height: 1.5; white-space: pre-wrap;">${this.esc(data.notes)}</div>
         </div>
       `);
@@ -312,8 +314,8 @@ const Preview = {
     // Terms & Conditions
     if (data.terms) {
       blocks.push(`
-        <div style="margin-bottom: 18px; page-break-inside: avoid;">
-          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">TERMS & CONDITIONS</div>
+        <div class="inv-footer-block inv-terms-block" style="margin-bottom: 18px; page-break-inside: avoid;">
+          <div class="inv-section-title" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: ${c.light}; margin-bottom: 4px;">TERMS & CONDITIONS</div>
           <div style="font-size: 11px; color: ${c.muted}; line-height: 1.5; white-space: pre-wrap;">${this.esc(data.terms)}</div>
         </div>
       `);
@@ -322,7 +324,7 @@ const Preview = {
     if (!blocks.length) return '';
 
     return `
-      <div style="border-top: 1px solid ${c.borderLight}; padding-top: 20px;">
+      <div class="inv-footer-sections" style="border-top: 1px solid ${c.borderLight}; padding-top: 20px;">
         ${blocks.join('')}
       </div>
     `;
@@ -332,7 +334,7 @@ const Preview = {
   renderBottomFooter(data) {
     const c = this.colors;
     return `
-      <div style="margin-top: 24px; text-align: center; page-break-inside: avoid;">
+      <div class="inv-bottom-footer" style="margin-top: 24px; text-align: center; page-break-inside: avoid;">
         <span style="font-size: 11px; font-weight: 500; color: ${c.light};">Thank you for your business!</span>
       </div>
     `;

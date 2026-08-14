@@ -12,6 +12,7 @@ const App = (() => {
   let workItemIdCounter = 0;
   let discountEnabled = false;
   let taxEnabled = false;
+  let activeMobileTab = 'editor';
 
   // ─── Work Type Options ───────────────────────────────────
   const WORK_TYPES = [
@@ -71,12 +72,16 @@ const App = (() => {
     setDefaultValues();
     addWorkItem(); // Start with one empty work item
     bindEvents();
+    setupMobileTabs();
     restoreBusinessDetails(); // Restore saved business info
     populateSavedClientsDropdown(); // Populate saved clients
     updatePreview();
 
     // Try to restore from localStorage
     restoreFromLocalStorage();
+
+    // Handle viewport resize to reset mobile/desktop visibility
+    window.addEventListener('resize', debounce(handleWindowResize, 100));
   }
 
   // ─── Set Default Values ──────────────────────────────────
@@ -230,6 +235,27 @@ const App = (() => {
     if (savedClientSelect) {
       savedClientSelect.addEventListener('change', loadSelectedClient);
     }
+
+    // Mobile View Switching
+    const mobileTabEditor = document.getElementById('tab-btn-editor');
+    if (mobileTabEditor) {
+      mobileTabEditor.addEventListener('click', () => switchMobileTab('editor'));
+    }
+
+    const mobileTabPreview = document.getElementById('tab-btn-preview');
+    if (mobileTabPreview) {
+      mobileTabPreview.addEventListener('click', () => switchMobileTab('preview'));
+    }
+
+    const mobileViewPreviewBtn = document.getElementById('mobile-view-preview-btn');
+    if (mobileViewPreviewBtn) {
+      mobileViewPreviewBtn.addEventListener('click', () => switchMobileTab('preview'));
+    }
+
+    const mobileBackToForm = document.getElementById('mobile-back-to-form');
+    if (mobileBackToForm) {
+      mobileBackToForm.addEventListener('click', () => switchMobileTab('editor'));
+    }
   }
 
   // ─── Handle Form Change ──────────────────────────────────
@@ -372,27 +398,27 @@ const App = (() => {
           <textarea data-field="description" placeholder="e.g., Website Development & Feature Updates" rows="2">${description}</textarea>
         </div>
         <div class="work-item-grid">
-          <div class="field-group">
+          <div class="field-group field-work-type">
             <label>Work Type</label>
             <select data-field="work-type">
               ${WORK_TYPES.map(t => `<option value="${t}" ${t === workType ? 'selected' : ''}>${t}</option>`).join('')}
             </select>
           </div>
-          <div class="field-group">
+          <div class="field-group field-quantity">
             <label>Quantity</label>
             <input type="number" data-field="quantity" value="${quantity}" min="0" step="0.5" />
           </div>
-          <div class="field-group">
+          <div class="field-group field-unit">
             <label>Unit</label>
             <select data-field="unit">
               ${UNITS.map(u => `<option value="${u}" ${u === unit ? 'selected' : ''}>${u}</option>`).join('')}
             </select>
           </div>
-          <div class="field-group">
+          <div class="field-group field-rate">
             <label>Rate</label>
             <input type="number" data-field="rate" value="${rate}" min="0" step="0.01" placeholder="0.00" />
           </div>
-          <div class="field-group">
+          <div class="field-group field-amount">
             <label>Amount</label>
             <div class="item-amount-display">—</div>
           </div>
@@ -439,6 +465,17 @@ const App = (() => {
   function updatePreview() {
     const data = collectFormData();
     Preview.update(data);
+
+    // Update preview badge on mobile tab
+    const badge = document.getElementById('preview-tab-badge');
+    if (badge) {
+      if (data.totals && data.totals.total > 0) {
+        badge.textContent = Calculations.formatCurrency(data.totals.total, data.invoice?.currency || 'EUR');
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
   }
 
   // ─── Handle Download PDF ─────────────────────────────────
@@ -888,6 +925,77 @@ const App = (() => {
     const deleteBtn = document.getElementById('delete-client-btn');
     if (deleteBtn) {
       deleteBtn.style.display = (select && select.value !== '') ? 'inline-flex' : 'none';
+    }
+  }
+
+  // ─── Mobile View Tabs ────────────────────────────────────
+  function setupMobileTabs() {
+    switchMobileTab(activeMobileTab || 'editor');
+  }
+
+  function switchMobileTab(tab) {
+    activeMobileTab = tab;
+    const tabEditor = document.getElementById('tab-btn-editor');
+    const tabPreview = document.getElementById('tab-btn-preview');
+    const editorPanel = document.getElementById('editor-panel');
+    const previewPanel = document.getElementById('preview-panel');
+
+    if (tab === 'editor') {
+      if (tabEditor) {
+        tabEditor.classList.add('active');
+        tabEditor.setAttribute('aria-selected', 'true');
+      }
+      if (tabPreview) {
+        tabPreview.classList.remove('active');
+        tabPreview.setAttribute('aria-selected', 'false');
+      }
+      if (editorPanel) {
+        editorPanel.classList.add('mobile-active');
+        editorPanel.classList.remove('mobile-hidden');
+      }
+      if (previewPanel) {
+        previewPanel.classList.remove('mobile-active');
+        previewPanel.classList.add('mobile-hidden');
+      }
+    } else {
+      // preview tab
+      if (tabPreview) {
+        tabPreview.classList.add('active');
+        tabPreview.setAttribute('aria-selected', 'true');
+      }
+      if (tabEditor) {
+        tabEditor.classList.remove('active');
+        tabEditor.setAttribute('aria-selected', 'false');
+      }
+      if (previewPanel) {
+        previewPanel.classList.add('mobile-active');
+        previewPanel.classList.remove('mobile-hidden');
+        // Scroll to top of preview
+        previewPanel.scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (editorPanel) {
+        editorPanel.classList.remove('mobile-active');
+        editorPanel.classList.add('mobile-hidden');
+      }
+    }
+  }
+
+  function handleWindowResize() {
+    const isDesktop = window.innerWidth > 900;
+    const editorPanel = document.getElementById('editor-panel');
+    const previewPanel = document.getElementById('preview-panel');
+
+    if (isDesktop) {
+      if (editorPanel) {
+        editorPanel.classList.remove('mobile-active', 'mobile-hidden');
+      }
+      if (previewPanel) {
+        previewPanel.classList.remove('mobile-active', 'mobile-hidden');
+      }
+    } else {
+      // Re-apply mobile active tab state
+      switchMobileTab(activeMobileTab);
     }
   }
 
